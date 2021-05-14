@@ -159,7 +159,6 @@ module.exports = {
                 
                 if(user.presence.activities.length > 0 && (user.presence.activities[0].type === 'PLAYING' || user.presence.activities[0].type === 'STREAMING')) {
                     list.push(await player.addPlayer(user.presence.activities[0].name, user.id, oddball_accept));
-                    console.log(user.presence.activities[0].name + '\t' + await player.countTest(user.presence.activities[0].name));
                     //console.log(await game.getAll(user.presence.activities[0].name));
                 }
             });
@@ -168,7 +167,6 @@ module.exports = {
             uniqueList.forEach(async (game) => {
                 Games.incrementCount(game);
             });
-            //SQL COUNT
         });
     },
 };

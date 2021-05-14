@@ -160,16 +160,17 @@ Games.prototype.getAll = async function(game_id) {
     });
 };
 
-Players.prototype.countTest = async function(game_id) {
-    var start = Date.now();
+Games.prototype.incrementCount = async function(game_id) {
+    const game = await Games.findOne({
+        where: { game_id: game_id },
+    });
 
     const playerCount = await Players.count({
         where: { game_id: game_id },
     })
 
-    var end = Date.now();
-
-    return [playerCount, end - start];
+    game.player_count = playerCount;
+    await game.save();
 };
 
 Blacklist.prototype.addGame = async function(game_id) {
