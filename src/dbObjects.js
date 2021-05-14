@@ -19,7 +19,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 const Blacklist = require('../models/blacklist')(sequelize, Sequelize.DataTypes);
 const Games = require('../models/games')(sequelize, Sequelize.DataTypes);
-const Oddball_Players = require('../models/oddball_Players')(sequelize, Sequelize.DataTypes);
+const Oddball_Players = require('../models/oddball_players')(sequelize, Sequelize.DataTypes);
 const Oddball = require('../models/oddball')(sequelize, Sequelize.DataTypes);
 const Players = require('../models/players')(sequelize, Sequelize.DataTypes);
 
