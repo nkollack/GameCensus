@@ -40,12 +40,10 @@ Players.prototype.addPlayer = async function(game_id, discord_id, oddball_accept
         });
 
         if(created) {
-            /*await Games.increment('player_count', {
-                where: { game_id: game_id }
-            });*/
             game.player_count += 1;
             await game.save();
         }
+
     //if game does not exist
     } else {
         const blacklist = await Blacklist.findOne({
@@ -69,12 +67,10 @@ Players.prototype.addPlayer = async function(game_id, discord_id, oddball_accept
                 });
 
                 if(created) {
-                    /*await Games.increment('player_count', {
-                        where: { game_id: game_id }
-                    });*/
                     game[0].player_count += 1;
                     await game[0].save();
                 }
+
             //if not in giantbomb api
             } else {
                 //check oddball database for game
@@ -89,20 +85,16 @@ Players.prototype.addPlayer = async function(game_id, discord_id, oddball_accept
                     });
                     //if player is not in oddball db
                     if(created) {
-                        //update player count for game in oddball db
-                        /*await Oddball.increment('player_count', {
-                            where: { game_id: game_id }
-                        });*/
                         oddball.player_count += 1;
                         await oddball.save();
 
                         //compare oddball player count to oddball acceptance variable
                         if(oddball.player_count == oddball_accept) {
                             //if true, add oddball to game db, add player to players db, and remove player and game from oddball dbs
-                            await Games.findOrCreate({
+                            const game = await Games.findOrCreate({
                                 where: { game_id: game_id },
                             });
-                            await Players.findOrCreate({
+                            const [player, created] = await Players.findOrCreate({
                                 where: { game_id: game_id, discord_id: discord_id }
                             });
                             await Oddball.destroy({
@@ -113,11 +105,17 @@ Players.prototype.addPlayer = async function(game_id, discord_id, oddball_accept
                                 where: { game_id: game_id },
                                 force: true,
                             });
+                            if(created) {
+                                game[0].player_count += 1;
+                                await game[0].save();
+                            }
                         }
                     }
+
                 //game is not in oddball db
                 } else {
                     //add game to oddball db and add player to oddball players db
+                    //IMPORTANT: if you update this code, make sure to check the default value for the oddball player_count
                     console.log("oddball: " + game_id);
                     await Oddball.findOrCreate({
                         where: { game_id: game_id },
@@ -217,6 +215,22 @@ Blacklist.prototype.removeGame = async function(game_id) {
         return true;
     }
     return false;
+};
+
+Blacklist.prototype.reset = async function(game_id) {
+    const blacklisted = await module.exports.Blacklist.prototype.addGame(game_id);
+
+    if(blacklisted) {
+        const unblacklisted = await module.exports.Blacklist.prototype.removeGame(game_id);
+
+        if(unblacklisted) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 };
 
 module.exports = {Blacklist, Games, Oddball_Players, Oddball, Players};

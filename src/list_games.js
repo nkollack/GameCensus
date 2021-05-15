@@ -3,7 +3,6 @@ const { Blacklist, Games, Oddball_Players, Oddball, Players } = require('./dbObj
 const { Op } = require('sequelize');
 require('isomorphic-fetch');
 
-let list;
 let interval;
 const player = new Players();
 const game = new Games();
@@ -95,6 +94,20 @@ module.exports = {
                         message.reply('Command requires a game name to use.  ex: $blacklistRemove Dark Souls');
                     }
 
+                } else if(CMD_NAME === 'blacklistReset') {
+                    if(args.length > 0) {
+                        const gameName = args.join(' ');
+                        const success = await blacklist.reset(gameName);
+
+                        if(success) {
+                            message.reply(gameName + ' successfully reset.');
+                        } else {
+                            message.reply('There was an error in either trying to add or remove "' + gameName + '" from the blacklist.');
+                        }
+                    } else {
+                        message.reply('Command requires a game name to use.  ex: $blacklistReset Dark Souls');
+                    }
+
                 } else if(CMD_NAME === 'whitelist') {
                     if(args.length > 0) {
                         const gameName = args.join(' ');
@@ -143,30 +156,19 @@ module.exports = {
     updateList: (guild, oddball_accept) => {
         options.running = true;
         var date = new Date();
+        var list = [];
+
         console.log("List running: " + (date.getHours() + 1) + ":" + date.getMinutes());
 
         guild.members.fetch()
-            .then(fetchedMembers => {
-            const users = fetchedMembers.filter(member => member.presence.status !== 'offline' && !member.user.bot);
-
-            //find game in list
-            //if game does not exist, add to list
-            //add user to game in list
-
-            var list = [];
+            .then( fetchedMembers => {
+            const users = fetchedMembers.filter(member => member.presence.status !== 'offline' && !member.user.bot);            
             
-            users.forEach( async (user) => {
-                
+            users.forEach( async (user) =>  {
                 if(user.presence.activities.length > 0 && (user.presence.activities[0].type === 'PLAYING' || user.presence.activities[0].type === 'STREAMING')) {
-                    list.push(await player.addPlayer(user.presence.activities[0].name, user.id, oddball_accept));
-                    //console.log(await game.getAll(user.presence.activities[0].name));
+                    await player.addPlayer(user.presence.activities[0].name, user.id, oddball_accept);
                 }
             });
-
-            var uniqueList = list.filter(onlyUnique);
-            uniqueList.forEach(async (game) => {
-                Games.incrementCount(game);
-            });
-        });
+        });       
     },
 };
