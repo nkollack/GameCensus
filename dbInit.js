@@ -7,11 +7,11 @@ const sequelize = new Sequelize('database', 'username', 'password', {
     storage: 'database.sqlite',
 });
 
-require('./models/games')(sequelize, Sequelize.DataTypes);
-require('./models/blacklist')(sequelize, Sequelize.DataTypes);
-require('./models/oddball_players')(sequelize, Sequelize.DataTypes);
-require('./models/oddball')(sequelize, Sequelize.DataTypes);
-require('./models/players')(sequelize, Sequelize.DataTypes);
+require('./src/models/games')(sequelize, Sequelize.DataTypes);
+require('./src/models/blacklist')(sequelize, Sequelize.DataTypes);
+require('./src/models/oddball_players')(sequelize, Sequelize.DataTypes);
+require('./src/models/oddball')(sequelize, Sequelize.DataTypes);
+require('./src/models/players')(sequelize, Sequelize.DataTypes);
 
 const force = process.argv.includes('--force') || process.argv.includes('-f');
 

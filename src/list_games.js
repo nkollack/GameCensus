@@ -4,9 +4,6 @@ import { Op } from 'sequelize';
 import 'isomorphic-fetch';
 
 let interval;
-const player = new Players();
-const game = new Games();
-const blacklist = new Blacklist();
 let options = {
     max: 1,
     time: 20000, //20 seconds
@@ -71,7 +68,7 @@ module.exports = {
                             return message.reply(`Command requires a game name to use.  ex: '${PREFIX}${CMD_NAME} Dark Souls'`);
 
                         const gameName = args.join(' ');
-                        const blacklisted = await blacklist.addGame(gameName);
+                        const blacklisted = await Blacklist.addGame(gameName);
 
                         if (blacklisted)
                             message.reply(gameName + ' successfully blacklisted.');
@@ -85,7 +82,7 @@ module.exports = {
                             return message.reply(`Command requires a game name to use.  ex: '${PREFIX}${CMD_NAME} Dark Souls'`);
 
                         const gameName = args.join(' ');
-                        const unblacklisted = await blacklist.removeGame(gameName);
+                        const unblacklisted = await Blacklist.removeGame(gameName);
 
                         if (unblacklisted)
                             message.reply(gameName + ' successfully removed blacklist.');
@@ -99,7 +96,7 @@ module.exports = {
                             return message.reply(`Command requires a game name to use.  ex: '${PREFIX}${CMD_NAME} Dark Souls'`);
 
                         const gameName = args.join(' ');
-                        const success = await blacklist.reset(gameName);
+                        const success = await Blacklist.reset(gameName);
 
                         if (success)
                             message.reply(gameName + ' successfully reset.');
@@ -113,7 +110,7 @@ module.exports = {
                             return message.reply(`Command requires a game name to use.  ex: '${PREFIX}${CMD_NAME} Dark Souls'`);
 
                         const gameName = args.join(' ');
-                        const whitelisted = await game.addGame(gameName);
+                        const whitelisted = await Games.addGame(gameName);
 
                         if (whitelisted)
                             message.reply(gameName + ' successfully whitelisted.');
@@ -169,7 +166,7 @@ module.exports = {
 
                 users.forEach(async (user) => {
                     if (user.presence.activities.length > 0 && (user.presence.activities[0].type === 'PLAYING' || user.presence.activities[0].type === 'STREAMING')) {
-                        await player.addPlayer(user.presence.activities[0].name, user.id, oddball_accept);
+                        await Players.addPlayer(user.presence.activities[0].name, user.id, oddball_accept);
                     }
                 });
             });

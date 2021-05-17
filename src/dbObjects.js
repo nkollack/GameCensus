@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const oddball = require('../models/oddball');
+const oddball = require('./models/oddball');
 const GiantbombAPI = require('./giantbomb_api');
 
 const sequelize = new Sequelize('database', 'username', 'password', {
@@ -17,17 +17,17 @@ const sequelize = new Sequelize('database', 'username', 'password', {
     },
 });
 
-const Blacklist = require('../models/blacklist')(sequelize, Sequelize.DataTypes);
-const Games = require('../models/games')(sequelize, Sequelize.DataTypes);
-const Oddball_Players = require('../models/oddball_players')(sequelize, Sequelize.DataTypes);
-const Oddball = require('../models/oddball')(sequelize, Sequelize.DataTypes);
-const Players = require('../models/players')(sequelize, Sequelize.DataTypes);
+const Blacklist = require('./models/blacklist')(sequelize, Sequelize.DataTypes);
+const Games = require('./models/games')(sequelize, Sequelize.DataTypes);
+const Oddball_Players = require('./models/oddball_players')(sequelize, Sequelize.DataTypes);
+const Oddball = require('./models/oddball')(sequelize, Sequelize.DataTypes);
+const Players = require('./models/players')(sequelize, Sequelize.DataTypes);
 
 //Players.belongsTo(Games, { foreignKey: 'game_id', as: 'game_id' });
 //Oddball_Players.belongsTo(Oddball, { foreignKey: 'game_id', as: 'game_id' });
 
 //add a player to a game
-Players.prototype.addPlayer = async function(game_id, discord_id, oddball_accept) {
+Players.addPlayer = async function(game_id, discord_id, oddball_accept) {
     const game = await Games.findOne({
         where: { game_id: game_id },
     });
@@ -129,7 +129,7 @@ Players.prototype.addPlayer = async function(game_id, discord_id, oddball_accept
     }
 };
 
-Games.prototype.addGame = async function(game_id) {
+Games.addGame = async function(game_id) {
     const game = await Games.findOne({
         where: { game_id: game_id },
     });
@@ -152,13 +152,13 @@ Games.prototype.addGame = async function(game_id) {
 };
 
 //get all players for a game
-Games.prototype.getAll = async function(game_id) {
+Games.getAll = async function(game_id) {
     return await Players.findAll({
         where: { game_id: game_id },
     });
 };
 
-Games.prototype.incrementCount = async function(game_id) {
+Games.incrementCount = async function(game_id) {
     const game = await Games.findOne({
         where: { game_id: game_id },
     });
@@ -171,7 +171,7 @@ Games.prototype.incrementCount = async function(game_id) {
     await game.save();
 };
 
-Blacklist.prototype.addGame = async function(game_id) {
+Blacklist.addGame = async function(game_id) {
     //check blacklist for pre-existing, or add to blacklist
     const [game, created] = await Blacklist.findOrCreate({
         where: { game_id: game_id },
@@ -201,7 +201,7 @@ Blacklist.prototype.addGame = async function(game_id) {
     return created;
 };
 
-Blacklist.prototype.removeGame = async function(game_id) {
+Blacklist.removeGame = async function(game_id) {
     const game = await Blacklist.findOne({
         where: { game_id: game_id },
     });
@@ -217,7 +217,7 @@ Blacklist.prototype.removeGame = async function(game_id) {
     return false;
 };
 
-Blacklist.prototype.reset = async function(game_id) {
+Blacklist.reset = async function(game_id) {
     const blacklisted = await module.exports.Blacklist.prototype.addGame(game_id);
 
     if(blacklisted) {
