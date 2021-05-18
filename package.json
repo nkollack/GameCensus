@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "discord.js": "^12.5.3",
-    "dotenv": "^8.2.0",
     "isomorphic-fetch": "^3.0.0",
     "sequelize": "^6.6.2",
     "sqlite3": "^5.0.2"
@@ -10,9 +9,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/bot.js",
-    "dev": "nodemon ./src/bot.js"
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js",
+    "createdb": "node ./scripts/dbInit.js"
   },
   "keywords": [],
   "author": "",

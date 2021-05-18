@@ -1,0 +1,24 @@
+{
+  "name": "Discord.JS Boilerplate",
+  "botToken": "xxx",
+  "prefix": "!",
+  "GB_API_Key": "xxx",
+  "prefixSeperated": false,
+  "channels": {
+    "general": "1234"
+  },
+  "roles": {
+    "admin": "1234"
+  },
+  "internal_options": {
+    "polling_delay": 20000,
+    "oddball_accept": 2
+  },
+  "logChannel": "1234",
+  "database": {
+    "host": "localhost",
+    "user": "username",
+    "pass": "password",
+    "database": "database"
+  }
+}
