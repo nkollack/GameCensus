@@ -1,7 +1,10 @@
 async function start() {
     const Discord = require("discord.js");
+    const GiantbombAPI = require('./giantbomb_api');
     const { promisify } = require("util");
     const readdir = promisify(require("fs").readdir);
+    const glob = require("glob");
+    const path = require("path");
     const chalk = require("chalk");
     const log = console.log;
 
@@ -10,28 +13,33 @@ async function start() {
             super();
 
             this.config = require("../config");
-            this.events = new Collection();
-            this.commands = new Collection();
-            this.aliases = new Collection();
-            this.models = new Collection();
+            this.events = new Map();
+            this.commands = new Map();
+            this.aliases = new Map();
+            this.models = new Map();
+            this.running = false;
+            this.interval;
 
             this.loadLogs();
             this.loadEvents('events');
             this.loadCommands('commands');
             this.loadModels('models');
             this.login(this.config.botToken);
-        }
+        };
+
+
 
         async loadEvents(eventDir) {
 
             // Create an empty array that will store all the file paths for the events,
             // and push all files to the array.
             const items = [];
-            items.push(...glob.sync(`${path.join(__dirname, eventDir)}/**/*.js`));
+            items.push( ... glob.sync(`${path.join(__dirname, eventDir)}/**/*.js`));
 
             for (const item of items) {
                 // Remove any cached events
-                if (require.cache[require.resolve(item)]) delete require.cache[require.resolve(item)];
+                if (require.cache[require.resolve(item)])
+                    delete require.cache[require.resolve(item)];
 
                 // Store the event in their Collection.
                 const event = require(item);
@@ -46,7 +54,7 @@ async function start() {
             this.logSuccess('Events were loaded...');
 
 
-        }
+        };
 
         async loadCommands(commandDir) {
             // Create an empty array that will store all the file paths for the commands,
@@ -74,7 +82,7 @@ async function start() {
                 }
             }
             this.logSuccess('Commands were loaded...');
-        }
+        };
 
         async loadModels(modelsDir) {
             const Sequelize = require("sequelize");
@@ -90,10 +98,16 @@ async function start() {
                 config.database.pass,
                 {
                     host: config.database.host,
-                    dialect: "mysql",
-                    define: {
-                        timestamps: false
-                    }
+                    dialect: "sqlite",
+                    logging: false,
+                    storage: `${this.config.database}.sqlite`,
+                    retry: {
+                        match: [
+                            /SQLITE_BUSY/,
+                        ],
+                        name: 'query',
+                        max: 5000
+                    },
                 }
             );
 
@@ -115,8 +129,6 @@ async function start() {
                 }
             }
         };
-
-
 
         loadLogs() {
             this.log = (msg, ignoreLogChannel = false) => {
@@ -171,8 +183,8 @@ async function start() {
                         "```"
                     );
             };
-        }
-    }
+        };
+    };
 
     const client = new GameCensus();
     module.exports = client;

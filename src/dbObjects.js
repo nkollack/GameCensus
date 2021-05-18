@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const oddball = require('./models/oddball');
 const GiantbombAPI = require('./giantbomb_api');
 
 const sequelize = new Sequelize('database', 'username', 'password', {
@@ -22,9 +21,6 @@ const Games = require('./models/games')(sequelize, Sequelize.DataTypes);
 const Oddball_Players = require('./models/oddball_players')(sequelize, Sequelize.DataTypes);
 const Oddball = require('./models/oddball')(sequelize, Sequelize.DataTypes);
 const Players = require('./models/players')(sequelize, Sequelize.DataTypes);
-
-//Players.belongsTo(Games, { foreignKey: 'game_id', as: 'game_id' });
-//Oddball_Players.belongsTo(Oddball, { foreignKey: 'game_id', as: 'game_id' });
 
 //add a player to a game
 Players.addPlayer = async function(game_id, discord_id, oddball_accept) {

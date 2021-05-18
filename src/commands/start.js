@@ -8,10 +8,10 @@ module.exports = {
     execute(client, message) {
         //update time if one provided in command
         if (args.length > 0)
-            module.exports.changeInverval(args[0], message);
+            //changeInverval(args[0], message);
 
 
-        module.exports.updateListOnInterval(guild, oddball_accept);
+        //updateListOnInterval(guild, oddball_accept);
         var date = new Date();
         console.log("List started: " + (date.getHours() + 1) + ":" + date.getMinutes());
         message.reply('The list is now running, interval(minutes): ' + options.time / 60000);

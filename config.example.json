@@ -2,5 +2,16 @@
     "Name": "GameCensus Bot",
     "Bot_Token": "discord_bot_token",
     "Prefix": "$",
-    "GB_API_Key": "giantbomb_api_key"
+    "GB_API_Key": "giantbomb_api_key",
+    "logChannel": "",
+    "internal_options": {
+        "polling_delay": 60000,
+        "oddball_accept": 2
+    },
+    "database": {
+        "host": "localhost",
+        "user": "username",
+        "pass": "password",
+        "database": "database"
+    }
 }
