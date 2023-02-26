@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "discord.js": "^12.5.3",
-    "dotenv": "^8.2.0",
     "isomorphic-fetch": "^3.0.0",
     "sequelize": "^6.6.2",
     "sqlite3": "^5.0.2"

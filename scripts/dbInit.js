@@ -1,11 +1,17 @@
 const Sequelize = require('sequelize');
+const config = require("../config.json");
 
-const sequelize = new Sequelize('database', 'username', 'password', {
-    host: 'localhost',
-    dialect: 'sqlite',
-    logging: false,
-    storage: 'database.sqlite',
-});
+const sequelize = new Sequelize(
+    config.database.database,
+    config.database.user,
+    config.database.pass,
+    {
+      host: config.database.host,
+      dialect: "sqlite",
+      logging: false,
+      storage: `${config.database.database}.sqlite`,
+    }
+  );
 
 require('./src/models/games')(sequelize, Sequelize.DataTypes);
 require('./src/models/blacklist')(sequelize, Sequelize.DataTypes);
